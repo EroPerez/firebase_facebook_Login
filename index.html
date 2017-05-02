@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <title>Facebook login</title>		
+        <!-- CSS de Bootstrap --> 
+        <link href="css/bootstrap.css" rel="stylesheet">
+        <link href="css/font-awesome.css" rel="stylesheet">
+        <link href="css/bootstrap-social.css" rel="stylesheet" >
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+        <!-- Firebase-->
+        <script src="https://www.gstatic.com/firebasejs/3.8.0/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyA6QO-9RoUbERJ5KF7__xsdHC9vLvfUAGg",
+                authDomain: "facebook-login-90029.firebaseapp.com",
+                databaseURL: "https://facebook-login-90029.firebaseio.com",
+                projectId: "facebook-login-90029",
+                storageBucket: "facebook-login-90029.appspot.com",
+                messagingSenderId: "867348428100"
+            };
+            firebase.initializeApp(config);
+
+            //login function
+            function facebookSigninClick() {
+
+                var auth = firebase.auth();
+
+                var provider = new firebase.auth.FacebookAuthProvider();
+
+                firebase.auth().signInWithPopup(provider).then(function (result) {
+                    // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+                    var token = result.credential.accessToken;
+                    // The signed-in user info.
+                    var user = result.user;
+                    // ...                    
+                    $('#userlogged').html(user.displayName);
+                    
+                }).catch(function (error) {
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // The email of the user's account used.
+                    var email = error.email;
+                    // The firebase.auth.AuthCredential type that was used.
+                    var credential = error.credential;
+
+                    console.log("Login Failed!", error);
+                });
+
+            }
+            // Logout from facebook
+            function facebookSignoutClick() {
+                firebase.auth().signOut().then(function () {
+                    // Sign-out successful.
+                    //...
+                }, function (error) {
+                    // An error happened.
+                    //...
+                });
+            }
+        </script>
+
+    </head>
+    <body>
+        <script>
+            //App ID: 731415270380097
+            //Secret Key: a558478984471db66145a984c617e209
+            //https://facebook-login-90029.firebaseapp.com/__/auth/handler
+            window.fbAsyncInit = function () {
+                FB.init({
+                    appId: '731415270380097',
+                    xfbml: true,
+                    version: 'v2.9'
+                });
+                FB.AppEvents.logPageView();
+            };
+
+            (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {
+                    return;}
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+        <div class="container">				
+
+            <div class="col-sm-4 social-buttons">
+                <h3 class="text-center">Social Buttons</h3>
+                <a class="btn btn-block btn-social btn-facebook" onclick="facebookSigninClick();">
+                    <span class="fa fa-facebook"></span> Sign in with Facebook
+                </a>  
+                <a class="btn btn-block btn-social btn-danger" onclick="facebookSignoutClick();">
+                    <span class="fa fa-facebook"></span> Sign out from Facebook
+                </a>
+            </div>
+            <div class="col-sm-4">
+                <div id="userlogged">Not user loggued</div>
+            </div>
+        </div>
+    </body>
+</html>
